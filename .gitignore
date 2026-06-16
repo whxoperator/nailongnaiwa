@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+
+# Runtime logs
+*.log
+logs/
+
+# Local/temporary rendering output
+report_render/
+report_pages/
+
+# Large generated or local-only artifacts
+raw_uploads/
+remote_collection_data/
+random_split_dataset/
+nailong_naiwa_10_demo/
+nailong_naiwa_balanced_experiment/
+nailong_naiwa_splits/
+
+# Optional local model checkpoints can be large; keep explicit models if needed.
+# models/*.pt
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
