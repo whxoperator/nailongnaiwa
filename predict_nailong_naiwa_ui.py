@@ -14,12 +14,18 @@ from pathlib import Path
 
 import torch
 
+from nailong_algorithms import (
+    IMAGE_SUFFIXES,
+    TRADITIONAL_ALGORITHMS,
+    dataset_distribution,
+    predict_traditional,
+)
 from nailong_model import load_checkpoint, predict_image
 
 
 LABEL_TEXT = {"nailong": "奶龙", "naiwa": "奶蛙"}
-IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
 SPLIT_WEIGHTS = (("train", 0.70), ("test", 0.15), ("generalization", 0.15))
+CNN_ALGORITHM = "cnn"
 
 
 PAGE = """<!doctype html>
@@ -34,7 +40,7 @@ PAGE = """<!doctype html>
       margin: 0;
       min-height: 100vh;
       font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
-      background: #f6f7f9;
+      background: #f5f6f8;
       color: #17202a;
     }
     header {
@@ -48,7 +54,7 @@ PAGE = """<!doctype html>
     }
     header strong { font-size: 18px; }
     main {
-      width: min(980px, 100%);
+      width: min(1120px, 100%);
       margin: 0 auto;
       padding: 22px;
       display: grid;
@@ -77,7 +83,7 @@ PAGE = """<!doctype html>
     input[type=file] { padding-top: 7px; }
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 14px;
     }
     button {
@@ -90,10 +96,10 @@ PAGE = """<!doctype html>
       font-weight: 700;
       cursor: pointer;
     }
-    button.secondary { background: #1f9d55; }
+    button.secondary { background: #16834a; }
     .result {
       display: grid;
-      grid-template-columns: minmax(220px, 380px) 1fr;
+      grid-template-columns: minmax(240px, 380px) 1fr;
       gap: 18px;
       align-items: start;
     }
@@ -106,6 +112,7 @@ PAGE = """<!doctype html>
       background: #fff;
     }
     h2 { margin: 0 0 14px; font-size: 22px; }
+    h3 { margin: 0 0 10px; font-size: 16px; }
     .bar {
       height: 30px;
       border-radius: 5px;
@@ -115,7 +122,6 @@ PAGE = """<!doctype html>
     }
     .fill {
       height: 100%;
-      background: #1f9d55;
       color: white;
       display: flex;
       align-items: center;
@@ -125,16 +131,58 @@ PAGE = """<!doctype html>
       font-size: 13px;
       font-weight: 700;
     }
+    .fill.nailong { background: #1f6feb; }
+    .fill.naiwa { background: #16834a; }
     .muted { color: #667085; font-size: 13px; line-height: 1.55; }
     .message {
-      border-left: 4px solid #1f9d55;
+      border-left: 4px solid #16834a;
       padding: 10px 12px;
       background: #eefaf3;
       border-radius: 4px;
     }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-    @media (max-width: 760px) {
-      .grid, .result { grid-template-columns: 1fr; }
+    .split-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .split-chart {
+      border: 1px solid #e0e6ef;
+      border-radius: 6px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 64px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .mini-bar {
+      height: 18px;
+      background: #e8edf5;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mini-fill { height: 100%; border-radius: 4px; }
+    .mini-fill.nailong { background: #7aa7f7; }
+    .mini-fill.naiwa { background: #5fc98c; }
+    .algo-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 8px;
+      border: 1px solid #cfd7e3;
+      border-radius: 999px;
+      background: #f8fafc;
+      font-size: 12px;
+      color: #344054;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 820px) {
+      .grid, .result, .split-grid { grid-template-columns: 1fr; }
       main { padding: 14px; }
     }
   </style>
@@ -142,7 +190,7 @@ PAGE = """<!doctype html>
 <body>
   <header>
     <strong>奶龙 / 奶蛙识别</strong>
-    <span class="muted">选择模型，上传图片，确认正确后自动入库</span>
+    <span class="muted">CNN 与传统图像算法可切换</span>
   </header>
   <main>
     __MESSAGE__
@@ -150,7 +198,11 @@ PAGE = """<!doctype html>
       <input type="hidden" name="action" value="predict" />
       <div class="grid">
         <div>
-          <label for="model">模型</label>
+          <label for="algorithm">判别算法</label>
+          <select id="algorithm" name="algorithm">__ALGORITHM_OPTIONS__</select>
+        </div>
+        <div>
+          <label for="model">CNN 模型</label>
           <select id="model" name="model">__MODEL_OPTIONS__</select>
         </div>
         <div>
@@ -162,11 +214,23 @@ PAGE = """<!doctype html>
         <button type="submit">识别图片</button>
       </div>
     </form>
+    __DISTRIBUTION__
     __RESULT__
   </main>
 </body>
 </html>
 """
+
+
+def algorithm_options(selected: str) -> str:
+    items = [(CNN_ALGORITHM, "CNN 深度学习模型"), *TRADITIONAL_ALGORITHMS.items()]
+    rows = []
+    for value, label in items:
+        rows.append(
+            f'<option value="{html.escape(value)}" {"selected" if value == selected else ""}>'
+            f"{html.escape(label)}</option>"
+        )
+    return "\n".join(rows)
 
 
 def model_options(models: list[Path], selected: Path | None) -> str:
@@ -175,7 +239,7 @@ def model_options(models: list[Path], selected: Path | None) -> str:
         is_selected = selected and model.resolve() == selected.resolve()
         rows.append(
             f'<option value="{html.escape(str(model))}" {"selected" if is_selected else ""}>'
-            f'{html.escape(model.name)}</option>'
+            f"{html.escape(model.name)}</option>"
         )
     return "\n".join(rows)
 
@@ -186,39 +250,81 @@ def image_data_uri(image_path: Path) -> str:
     return f"data:{mime};base64,{data}"
 
 
+def label_display(name: str) -> str:
+    return f"{name}（{LABEL_TEXT.get(name, name)}）"
+
+
+def distribution_html(split_dir: str | Path) -> str:
+    distribution = dataset_distribution(split_dir)
+    max_count = max(
+        [count for labels in distribution.values() for count in labels.values()] or [1]
+    )
+    sections = []
+    for split_name, labels in distribution.items():
+        rows = []
+        for label in ("nailong", "naiwa"):
+            count = labels.get(label, 0)
+            width = (count / max_count * 100) if max_count else 0
+            rows.append(
+                f"""
+                <div class="chart-row">
+                  <span>{html.escape(LABEL_TEXT.get(label, label))}</span>
+                  <div class="mini-bar"><div class="mini-fill {html.escape(label)}" style="width:{width:.1f}%"></div></div>
+                  <strong>{count}</strong>
+                </div>
+                """
+            )
+        sections.append(
+            f"""
+            <div class="split-chart">
+              <h3>{html.escape(split_name)}</h3>
+              {''.join(rows)}
+            </div>
+            """
+        )
+    return f"""
+    <section class="panel">
+      <h2>图片分布</h2>
+      <div class="split-grid">{''.join(sections)}</div>
+    </section>
+    """
+
+
 def result_html(
     image_path: Path,
     model_path: Path,
+    algorithm: str,
+    algorithm_label: str,
     predicted: str,
     scores: dict[str, float],
 ) -> str:
     rows = []
     for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True):
         width = max(score * 100, 1.0)
-        label = f"{name}（{LABEL_TEXT.get(name, name)}）"
         rows.append(
             f"""
-            <div>{html.escape(label)}: {score * 100:.1f}%</div>
-            <div class="bar"><div class="fill" style="width:{width:.1f}%">{score * 100:.1f}%</div></div>
+            <div>{html.escape(label_display(name))}: {score * 100:.1f}%</div>
+            <div class="bar"><div class="fill {html.escape(name)}" style="width:{width:.1f}%">{score * 100:.1f}%</div></div>
             """
         )
-    predicted_text = f"{predicted}（{LABEL_TEXT.get(predicted, predicted)}）"
     return f"""
     <section class="panel result">
       <img class="preview" src="{image_data_uri(image_path)}" alt="uploaded image" />
       <div>
-        <h2>判断结果：{html.escape(predicted_text)}</h2>
+        <span class="algo-badge">{html.escape(algorithm_label)}</span>
+        <h2>判断结果：{html.escape(label_display(predicted))}</h2>
         {''.join(rows)}
         <form method="post">
           <input type="hidden" name="action" value="accept" />
           <input type="hidden" name="image_path" value="{html.escape(str(image_path))}" />
           <input type="hidden" name="model" value="{html.escape(str(model_path))}" />
+          <input type="hidden" name="algorithm" value="{html.escape(algorithm)}" />
           <input type="hidden" name="predicted" value="{html.escape(predicted)}" />
           <div class="actions">
             <button class="secondary" type="submit">判断正确，随机加入数据集</button>
           </div>
         </form>
-        <p class="muted">入库时会复制图片到 train / test / generalization 之一，不会删除原图片。</p>
+        <p class="muted">入库时会复制图片到 train / test / generalization 之一，不会删除上传原图。</p>
       </div>
     </section>
     """
@@ -277,7 +383,17 @@ def make_handler(args: argparse.Namespace):
             return Path(args.model)
         if models:
             return models[0]
-        raise FileNotFoundError("models directory has no .pt model files")
+        return Path(args.model)
+
+    def selected_algorithm(value: str | None) -> str:
+        if value == CNN_ALGORITHM or value in TRADITIONAL_ALGORITHMS:
+            return value
+        return CNN_ALGORITHM
+
+    def algorithm_label(value: str) -> str:
+        if value == CNN_ALGORITHM:
+            return "CNN 深度学习模型"
+        return TRADITIONAL_ALGORITHMS[value]
 
     def get_model(path: Path):
         resolved = path.resolve()
@@ -289,14 +405,22 @@ def make_handler(args: argparse.Namespace):
         def log_message(self, format: str, *args: object) -> None:
             return
 
-        def render(self, result: str = "", message: str = "", selected: Path | None = None) -> None:
+        def render(
+            self,
+            result: str = "",
+            message: str = "",
+            selected: Path | None = None,
+            algorithm: str = CNN_ALGORITHM,
+        ) -> None:
             models = available_models()
-            if not models:
-                result = '<section class="panel">没有找到模型，请先运行训练脚本生成 models/*.pt。</section>'
+            if not models and algorithm == CNN_ALGORITHM:
+                result = '<section class="panel">没有找到 CNN 模型，请先运行训练脚本生成 models/*.pt。</section>'
             message_html = f'<section class="message">{html.escape(message)}</section>' if message else ""
             data = (
                 PAGE
+                .replace("__ALGORITHM_OPTIONS__", algorithm_options(algorithm))
                 .replace("__MODEL_OPTIONS__", model_options(models, selected))
+                .replace("__DISTRIBUTION__", distribution_html(args.split_dir))
                 .replace("__MESSAGE__", message_html)
                 .replace("__RESULT__", result)
             ).encode("utf-8")
@@ -307,10 +431,7 @@ def make_handler(args: argparse.Namespace):
             self.wfile.write(data)
 
         def do_GET(self) -> None:
-            try:
-                self.render(selected=selected_model(None))
-            except FileNotFoundError:
-                self.render()
+            self.render(selected=selected_model(None))
 
         def do_POST(self) -> None:
             content_type = self.headers.get("Content-Type", "")
@@ -330,9 +451,10 @@ def make_handler(args: argparse.Namespace):
                 "CONTENT_TYPE": self.headers.get("Content-Type", ""),
             })
             model_path = selected_model(form.getfirst("model"))
+            algorithm = selected_algorithm(form.getfirst("algorithm"))
             field = form["image"] if "image" in form else None
             if field is None or not field.filename:
-                self.render(message="没有收到图片。", selected=model_path)
+                self.render(message="没有收到图片。", selected=model_path, algorithm=algorithm)
                 return
 
             suffix = Path(field.filename).suffix.lower()
@@ -342,23 +464,40 @@ def make_handler(args: argparse.Namespace):
             with image_path.open("wb") as f:
                 shutil.copyfileobj(field.file, f)
 
-            model, classes, image_size, _metadata = get_model(model_path)
-            predicted, scores = predict_image(model, classes, image_path, device, image_size=image_size)
-            self.render(result_html(image_path, model_path, predicted, scores), selected=model_path)
+            try:
+                if algorithm == CNN_ALGORITHM:
+                    model, classes, image_size, _metadata = get_model(model_path)
+                    predicted, scores = predict_image(model, classes, image_path, device, image_size=image_size)
+                else:
+                    predicted, scores = predict_traditional(algorithm, image_path, args.split_dir)
+            except Exception as exc:
+                self.render(
+                    message=f"识别失败：{exc}",
+                    selected=model_path,
+                    algorithm=algorithm,
+                )
+                return
+
+            self.render(
+                result_html(image_path, model_path, algorithm, algorithm_label(algorithm), predicted, scores),
+                selected=model_path,
+                algorithm=algorithm,
+            )
 
         def handle_accept(self, form: dict[str, str]) -> None:
             image_path = Path(form.get("image_path", ""))
             predicted = form.get("predicted", "")
             model_path = selected_model(form.get("model"))
+            algorithm = selected_algorithm(form.get("algorithm"))
             if predicted not in LABEL_TEXT or not image_path.exists():
-                self.render(message="入库失败：图片或类别无效。", selected=model_path)
+                self.render(message="入库失败：图片或类别无效。", selected=model_path, algorithm=algorithm)
                 return
 
             split_name = random_split(rng)
             target_dir = Path(args.split_dir) / split_name / predicted
             target = unique_copy(image_path, target_dir)
-            message = f"已按 {predicted}（{LABEL_TEXT[predicted]}）复制到 {split_name}：{target}"
-            self.render(message=message, selected=model_path)
+            message = f"已按 {label_display(predicted)} 复制到 {split_name}：{target}"
+            self.render(message=message, selected=model_path, algorithm=algorithm)
 
     return Handler
 
