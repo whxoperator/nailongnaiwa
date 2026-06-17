@@ -17,23 +17,26 @@ import torch
 from nailong_algorithms import (
     IMAGE_SUFFIXES,
     TRADITIONAL_ALGORITHMS,
+    confidence_level,
     dataset_distribution,
+    explain_confidence,
     predict_traditional,
 )
 from nailong_model import load_checkpoint, predict_image
 
 
-LABEL_TEXT = {"nailong": "奶龙", "naiwa": "奶蛙"}
+LABEL_TEXT = {"nailong": "Nailong", "naiwa": "Naiwa"}
 SPLIT_WEIGHTS = (("train", 0.70), ("test", 0.15), ("generalization", 0.15))
 CNN_ALGORITHM = "cnn"
+COMPARE_ALL = "compare_all"
 
 
 PAGE = """<!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>奶龙 / 奶蛙识别</title>
+  <title>Nailong / Naiwa Classifier</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -54,7 +57,7 @@ PAGE = """<!doctype html>
     }
     header strong { font-size: 18px; }
     main {
-      width: min(1120px, 100%);
+      width: min(1160px, 100%);
       margin: 0 auto;
       padding: 22px;
       display: grid;
@@ -141,12 +144,12 @@ PAGE = """<!doctype html>
       border-radius: 4px;
     }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-    .split-grid {
+    .split-grid, .compare-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
-    .split-chart {
+    .split-chart, .compare-card {
       border: 1px solid #e0e6ef;
       border-radius: 6px;
       padding: 12px;
@@ -154,7 +157,7 @@ PAGE = """<!doctype html>
     }
     .chart-row {
       display: grid;
-      grid-template-columns: 64px 1fr 42px;
+      grid-template-columns: 72px 1fr 42px;
       gap: 8px;
       align-items: center;
       margin-top: 10px;
@@ -169,7 +172,7 @@ PAGE = """<!doctype html>
     .mini-fill { height: 100%; border-radius: 4px; }
     .mini-fill.nailong { background: #7aa7f7; }
     .mini-fill.naiwa { background: #5fc98c; }
-    .algo-badge {
+    .algo-badge, .confidence {
       display: inline-flex;
       align-items: center;
       min-height: 26px;
@@ -179,18 +182,22 @@ PAGE = """<!doctype html>
       background: #f8fafc;
       font-size: 12px;
       color: #344054;
-      margin-bottom: 12px;
+      margin: 0 8px 12px 0;
     }
-    @media (max-width: 820px) {
-      .grid, .result, .split-grid { grid-template-columns: 1fr; }
+    .confidence.high { border-color: #16834a; color: #12623a; background: #eefaf3; }
+    .confidence.medium { border-color: #b7791f; color: #7a4d12; background: #fff8e8; }
+    .confidence.low { border-color: #c2410c; color: #8a2c0a; background: #fff2ec; }
+    .compare-card strong { display: block; margin-bottom: 8px; }
+    @media (max-width: 860px) {
+      .grid, .result, .split-grid, .compare-grid { grid-template-columns: 1fr; }
       main { padding: 14px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <strong>奶龙 / 奶蛙识别</strong>
-    <span class="muted">CNN 与传统图像算法可切换</span>
+    <strong>Nailong / Naiwa Classifier</strong>
+    <span class="muted">CNN, classic image features, and algorithm comparison</span>
   </header>
   <main>
     __MESSAGE__
@@ -198,20 +205,20 @@ PAGE = """<!doctype html>
       <input type="hidden" name="action" value="predict" />
       <div class="grid">
         <div>
-          <label for="algorithm">判别算法</label>
+          <label for="algorithm">Algorithm</label>
           <select id="algorithm" name="algorithm">__ALGORITHM_OPTIONS__</select>
         </div>
         <div>
-          <label for="model">CNN 模型</label>
+          <label for="model">CNN model</label>
           <select id="model" name="model">__MODEL_OPTIONS__</select>
         </div>
         <div>
-          <label for="image">新图片</label>
+          <label for="image">Image</label>
           <input id="image" type="file" name="image" accept="image/*" required />
         </div>
       </div>
       <div class="actions">
-        <button type="submit">识别图片</button>
+        <button type="submit">Classify image</button>
       </div>
     </form>
     __DISTRIBUTION__
@@ -223,25 +230,24 @@ PAGE = """<!doctype html>
 
 
 def algorithm_options(selected: str) -> str:
-    items = [(CNN_ALGORITHM, "CNN 深度学习模型"), *TRADITIONAL_ALGORITHMS.items()]
-    rows = []
-    for value, label in items:
-        rows.append(
-            f'<option value="{html.escape(value)}" {"selected" if value == selected else ""}>'
-            f"{html.escape(label)}</option>"
-        )
-    return "\n".join(rows)
+    items = [
+        (CNN_ALGORITHM, "CNN deep model"),
+        (COMPARE_ALL, "Compare all algorithms"),
+        *TRADITIONAL_ALGORITHMS.items(),
+    ]
+    return "\n".join(
+        f'<option value="{html.escape(value)}" {"selected" if value == selected else ""}>{html.escape(label)}</option>'
+        for value, label in items
+    )
 
 
 def model_options(models: list[Path], selected: Path | None) -> str:
-    rows = []
-    for model in models:
-        is_selected = selected and model.resolve() == selected.resolve()
-        rows.append(
-            f'<option value="{html.escape(str(model))}" {"selected" if is_selected else ""}>'
-            f"{html.escape(model.name)}</option>"
-        )
-    return "\n".join(rows)
+    return "\n".join(
+        f'<option value="{html.escape(str(model))}" '
+        f'{"selected" if selected and model.resolve() == selected.resolve() else ""}>'
+        f"{html.escape(model.name)}</option>"
+        for model in models
+    )
 
 
 def image_data_uri(image_path: Path) -> str:
@@ -251,14 +257,12 @@ def image_data_uri(image_path: Path) -> str:
 
 
 def label_display(name: str) -> str:
-    return f"{name}（{LABEL_TEXT.get(name, name)}）"
+    return f"{name} ({LABEL_TEXT.get(name, name)})"
 
 
 def distribution_html(split_dir: str | Path) -> str:
     distribution = dataset_distribution(split_dir)
-    max_count = max(
-        [count for labels in distribution.values() for count in labels.values()] or [1]
-    )
+    max_count = max([count for labels in distribution.values() for count in labels.values()] or [1])
     sections = []
     for split_name, labels in distribution.items():
         rows = []
@@ -268,26 +272,27 @@ def distribution_html(split_dir: str | Path) -> str:
             rows.append(
                 f"""
                 <div class="chart-row">
-                  <span>{html.escape(LABEL_TEXT.get(label, label))}</span>
+                  <span>{html.escape(label_display(label))}</span>
                   <div class="mini-bar"><div class="mini-fill {html.escape(label)}" style="width:{width:.1f}%"></div></div>
                   <strong>{count}</strong>
                 </div>
                 """
             )
-        sections.append(
+        sections.append(f'<div class="split-chart"><h3>{html.escape(split_name)}</h3>{"".join(rows)}</div>')
+    return f'<section class="panel"><h2>Image Distribution</h2><div class="split-grid">{"".join(sections)}</div></section>'
+
+
+def score_rows(scores: dict[str, float]) -> str:
+    rows = []
+    for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True):
+        width = max(score * 100, 1.0)
+        rows.append(
             f"""
-            <div class="split-chart">
-              <h3>{html.escape(split_name)}</h3>
-              {''.join(rows)}
-            </div>
+            <div>{html.escape(label_display(name))}: {score * 100:.1f}%</div>
+            <div class="bar"><div class="fill {html.escape(name)}" style="width:{width:.1f}%">{score * 100:.1f}%</div></div>
             """
         )
-    return f"""
-    <section class="panel">
-      <h2>图片分布</h2>
-      <div class="split-grid">{''.join(sections)}</div>
-    </section>
-    """
+    return "".join(rows)
 
 
 def result_html(
@@ -298,22 +303,16 @@ def result_html(
     predicted: str,
     scores: dict[str, float],
 ) -> str:
-    rows = []
-    for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True):
-        width = max(score * 100, 1.0)
-        rows.append(
-            f"""
-            <div>{html.escape(label_display(name))}: {score * 100:.1f}%</div>
-            <div class="bar"><div class="fill {html.escape(name)}" style="width:{width:.1f}%">{score * 100:.1f}%</div></div>
-            """
-        )
+    level = confidence_level(scores)
     return f"""
     <section class="panel result">
       <img class="preview" src="{image_data_uri(image_path)}" alt="uploaded image" />
       <div>
         <span class="algo-badge">{html.escape(algorithm_label)}</span>
-        <h2>判断结果：{html.escape(label_display(predicted))}</h2>
-        {''.join(rows)}
+        <span class="confidence {html.escape(level)}">{html.escape(level)} confidence</span>
+        <h2>Prediction: {html.escape(label_display(predicted))}</h2>
+        <p class="muted">{html.escape(explain_confidence(scores))}</p>
+        {score_rows(scores)}
         <form method="post">
           <input type="hidden" name="action" value="accept" />
           <input type="hidden" name="image_path" value="{html.escape(str(image_path))}" />
@@ -321,10 +320,36 @@ def result_html(
           <input type="hidden" name="algorithm" value="{html.escape(algorithm)}" />
           <input type="hidden" name="predicted" value="{html.escape(predicted)}" />
           <div class="actions">
-            <button class="secondary" type="submit">判断正确，随机加入数据集</button>
+            <button class="secondary" type="submit">Accept result and add to dataset</button>
           </div>
         </form>
-        <p class="muted">入库时会复制图片到 train / test / generalization 之一，不会删除上传原图。</p>
+        <p class="muted">Accepted images are copied into train / test / generalization. The uploaded source is kept.</p>
+      </div>
+    </section>
+    """
+
+
+def comparison_html(image_path: Path, results: list[dict[str, object]]) -> str:
+    cards = []
+    for result in sorted(results, key=lambda item: float(item["confidence"]), reverse=True):
+        scores = result["scores"]  # type: ignore[assignment]
+        level = confidence_level(scores)  # type: ignore[arg-type]
+        cards.append(
+            f"""
+            <div class="compare-card">
+              <strong>{html.escape(str(result["label"]))}</strong>
+              <span class="confidence {html.escape(level)}">{html.escape(level)}</span>
+              <div>Prediction: {html.escape(label_display(str(result["predicted"])))}</div>
+              {score_rows(scores)}
+            </div>
+            """
+        )
+    return f"""
+    <section class="panel result">
+      <img class="preview" src="{image_data_uri(image_path)}" alt="uploaded image" />
+      <div>
+        <h2>Algorithm Comparison</h2>
+        <div class="compare-grid">{''.join(cards)}</div>
       </div>
     </section>
     """
@@ -386,13 +411,15 @@ def make_handler(args: argparse.Namespace):
         return Path(args.model)
 
     def selected_algorithm(value: str | None) -> str:
-        if value == CNN_ALGORITHM or value in TRADITIONAL_ALGORITHMS:
+        if value in {CNN_ALGORITHM, COMPARE_ALL} or value in TRADITIONAL_ALGORITHMS:
             return value
         return CNN_ALGORITHM
 
     def algorithm_label(value: str) -> str:
         if value == CNN_ALGORITHM:
-            return "CNN 深度学习模型"
+            return "CNN deep model"
+        if value == COMPARE_ALL:
+            return "Compare all algorithms"
         return TRADITIONAL_ALGORITHMS[value]
 
     def get_model(path: Path):
@@ -400,6 +427,33 @@ def make_handler(args: argparse.Namespace):
         if resolved not in cache:
             cache[resolved] = load_checkpoint(resolved, device)
         return cache[resolved]
+
+    def run_cnn(model_path: Path, image_path: Path) -> tuple[str, dict[str, float]]:
+        model, classes, image_size, _metadata = get_model(model_path)
+        return predict_image(model, classes, image_path, device, image_size=image_size)
+
+    def compare_all(model_path: Path, image_path: Path) -> list[dict[str, object]]:
+        results: list[dict[str, object]] = []
+        predicted, scores = run_cnn(model_path, image_path)
+        results.append(
+            {
+                "label": f"CNN: {model_path.name}",
+                "predicted": predicted,
+                "scores": scores,
+                "confidence": max(scores.values()),
+            }
+        )
+        for algorithm, label in TRADITIONAL_ALGORITHMS.items():
+            predicted, scores = predict_traditional(algorithm, image_path, args.split_dir)
+            results.append(
+                {
+                    "label": label,
+                    "predicted": predicted,
+                    "scores": scores,
+                    "confidence": max(scores.values()),
+                }
+            )
+        return results
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, format: str, *args: object) -> None:
@@ -413,8 +467,8 @@ def make_handler(args: argparse.Namespace):
             algorithm: str = CNN_ALGORITHM,
         ) -> None:
             models = available_models()
-            if not models and algorithm == CNN_ALGORITHM:
-                result = '<section class="panel">没有找到 CNN 模型，请先运行训练脚本生成 models/*.pt。</section>'
+            if not models and algorithm in {CNN_ALGORITHM, COMPARE_ALL}:
+                result = '<section class="panel">No CNN model was found. Run training first to create models/*.pt.</section>'
             message_html = f'<section class="message">{html.escape(message)}</section>' if message else ""
             data = (
                 PAGE
@@ -443,7 +497,7 @@ def make_handler(args: argparse.Namespace):
                 if form.get("action") == "accept":
                     self.handle_accept(form)
                 else:
-                    self.render(message="未知操作。")
+                    self.render(message="Unknown action.")
 
         def handle_predict(self) -> None:
             form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={
@@ -454,7 +508,7 @@ def make_handler(args: argparse.Namespace):
             algorithm = selected_algorithm(form.getfirst("algorithm"))
             field = form["image"] if "image" in form else None
             if field is None or not field.filename:
-                self.render(message="没有收到图片。", selected=model_path, algorithm=algorithm)
+                self.render(message="No image was received.", selected=model_path, algorithm=algorithm)
                 return
 
             suffix = Path(field.filename).suffix.lower()
@@ -466,23 +520,18 @@ def make_handler(args: argparse.Namespace):
 
             try:
                 if algorithm == CNN_ALGORITHM:
-                    model, classes, image_size, _metadata = get_model(model_path)
-                    predicted, scores = predict_image(model, classes, image_path, device, image_size=image_size)
+                    predicted, scores = run_cnn(model_path, image_path)
+                    result = result_html(image_path, model_path, algorithm, algorithm_label(algorithm), predicted, scores)
+                elif algorithm == COMPARE_ALL:
+                    result = comparison_html(image_path, compare_all(model_path, image_path))
                 else:
                     predicted, scores = predict_traditional(algorithm, image_path, args.split_dir)
+                    result = result_html(image_path, model_path, algorithm, algorithm_label(algorithm), predicted, scores)
             except Exception as exc:
-                self.render(
-                    message=f"识别失败：{exc}",
-                    selected=model_path,
-                    algorithm=algorithm,
-                )
+                self.render(message=f"Prediction failed: {exc}", selected=model_path, algorithm=algorithm)
                 return
 
-            self.render(
-                result_html(image_path, model_path, algorithm, algorithm_label(algorithm), predicted, scores),
-                selected=model_path,
-                algorithm=algorithm,
-            )
+            self.render(result, selected=model_path, algorithm=algorithm)
 
         def handle_accept(self, form: dict[str, str]) -> None:
             image_path = Path(form.get("image_path", ""))
@@ -490,13 +539,13 @@ def make_handler(args: argparse.Namespace):
             model_path = selected_model(form.get("model"))
             algorithm = selected_algorithm(form.get("algorithm"))
             if predicted not in LABEL_TEXT or not image_path.exists():
-                self.render(message="入库失败：图片或类别无效。", selected=model_path, algorithm=algorithm)
+                self.render(message="Import failed: invalid image or class.", selected=model_path, algorithm=algorithm)
                 return
 
             split_name = random_split(rng)
             target_dir = Path(args.split_dir) / split_name / predicted
             target = unique_copy(image_path, target_dir)
-            message = f"已按 {label_display(predicted)} 复制到 {split_name}：{target}"
+            message = f"Copied as {label_display(predicted)} into {split_name}: {target}"
             self.render(message=message, selected=model_path, algorithm=algorithm)
 
     return Handler

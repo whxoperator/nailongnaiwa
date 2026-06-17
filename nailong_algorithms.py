@@ -14,6 +14,7 @@ TRADITIONAL_ALGORITHMS = {
     "thumbnail_knn": "Thumbnail kNN",
     "edge_hist": "Edge histogram prototype",
 }
+ALL_ALGORITHMS = {"cnn": "CNN deep model", **TRADITIONAL_ALGORITHMS}
 
 
 def image_files(path: Path) -> list[Path]:
@@ -171,3 +172,25 @@ def predict_traditional(
 
     predicted = max(scores, key=scores.get)
     return predicted, scores
+
+
+def confidence_level(scores: dict[str, float]) -> str:
+    if not scores:
+        return "unknown"
+    top = max(scores.values())
+    if top >= 0.78:
+        return "high"
+    if top >= 0.62:
+        return "medium"
+    return "low"
+
+
+def explain_confidence(scores: dict[str, float]) -> str:
+    level = confidence_level(scores)
+    if level == "high":
+        return "High confidence: the leading class is clearly ahead."
+    if level == "medium":
+        return "Medium confidence: the result is usable, but worth checking."
+    if level == "low":
+        return "Low confidence: the classes are close, so manual review is recommended."
+    return "No confidence score is available."

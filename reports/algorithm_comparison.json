@@ -1,0 +1,114 @@
+[
+  {
+    "name": "cnn:nailong_naiwa_balanced_cnn.pt",
+    "correct": 37,
+    "total": 41,
+    "accuracy": 0.9024390243902439,
+    "confusion": {
+      "nailong": {
+        "nailong": 18,
+        "naiwa": 2
+      },
+      "naiwa": {
+        "nailong": 2,
+        "naiwa": 19
+      }
+    }
+  },
+  {
+    "name": "thumbnail_knn",
+    "correct": 36,
+    "total": 41,
+    "accuracy": 0.8780487804878049,
+    "confusion": {
+      "nailong": {
+        "nailong": 17,
+        "naiwa": 3
+      },
+      "naiwa": {
+        "nailong": 2,
+        "naiwa": 19
+      }
+    }
+  },
+  {
+    "name": "color_hist",
+    "correct": 35,
+    "total": 41,
+    "accuracy": 0.8536585365853658,
+    "confusion": {
+      "nailong": {
+        "nailong": 19,
+        "naiwa": 1
+      },
+      "naiwa": {
+        "nailong": 5,
+        "naiwa": 16
+      }
+    }
+  },
+  {
+    "name": "color_mean",
+    "correct": 32,
+    "total": 41,
+    "accuracy": 0.7804878048780488,
+    "confusion": {
+      "nailong": {
+        "nailong": 18,
+        "naiwa": 2
+      },
+      "naiwa": {
+        "nailong": 7,
+        "naiwa": 14
+      }
+    }
+  },
+  {
+    "name": "edge_hist",
+    "correct": 24,
+    "total": 41,
+    "accuracy": 0.5853658536585366,
+    "confusion": {
+      "nailong": {
+        "naiwa": 11,
+        "nailong": 9
+      },
+      "naiwa": {
+        "nailong": 6,
+        "naiwa": 15
+      }
+    }
+  },
+  {
+    "name": "cnn:nailong_naiwa_cnn.pt",
+    "correct": 19,
+    "total": 41,
+    "accuracy": 0.4634146341463415,
+    "confusion": {
+      "nailong": {
+        "nailong": 12,
+        "naiwa": 8
+      },
+      "naiwa": {
+        "naiwa": 7,
+        "nailong": 14
+      }
+    }
+  },
+  {
+    "name": "cnn:nailong_naiwa_split_cnn.pt",
+    "correct": 18,
+    "total": 41,
+    "accuracy": 0.43902439024390244,
+    "confusion": {
+      "nailong": {
+        "nailong": 11,
+        "naiwa": 9
+      },
+      "naiwa": {
+        "naiwa": 7,
+        "nailong": 14
+      }
+    }
+  }
+]
