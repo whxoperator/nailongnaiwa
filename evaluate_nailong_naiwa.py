@@ -12,7 +12,7 @@ from nailong_model import load_checkpoint, predict_image
 def evaluate(args: argparse.Namespace) -> None:
     data_dir = Path(args.data)
     device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
-    model, classes = load_checkpoint(args.model, device)
+    model, classes, image_size, _metadata = load_checkpoint(args.model, device)
 
     dataset = ImageFolder(data_dir)
     total = 0
@@ -23,7 +23,7 @@ def evaluate(args: argparse.Namespace) -> None:
 
     for path, expected_idx in dataset.samples:
         expected = dataset.classes[expected_idx]
-        predicted, scores = predict_image(model, classes, path, device)
+        predicted, scores = predict_image(model, classes, path, device, image_size=image_size)
         total += 1
         correct += int(predicted == expected)
         score_text = ", ".join(f"{name}={score:.3f}" for name, score in scores.items())

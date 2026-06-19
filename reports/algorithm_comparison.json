@@ -80,6 +80,22 @@
     }
   },
   {
+    "name": "cnn:nailong_naiwa_resnet18_head.pt",
+    "correct": 20,
+    "total": 41,
+    "accuracy": 0.4878048780487805,
+    "confusion": {
+      "nailong": {
+        "naiwa": 13,
+        "nailong": 7
+      },
+      "naiwa": {
+        "nailong": 8,
+        "naiwa": 13
+      }
+    }
+  },
+  {
     "name": "cnn:nailong_naiwa_cnn.pt",
     "correct": 19,
     "total": 41,

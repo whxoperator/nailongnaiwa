@@ -5,9 +5,10 @@ This is a small PyTorch image classification project for distinguishing `nailong
 ## Highlights
 
 - Train a lightweight CNN classifier.
+- Fine-tune a pretrained torchvision classifier head.
 - Preprocess Naiwa watermark regions.
 - Build balanced train / test / generalization splits.
-- Upload an image in a local web UI and choose the prediction algorithm.
+- Upload an image in a local web UI and choose the prediction algorithm, including an optional cloud multimodal LLM.
 - Compare CNN predictions with classic image algorithms.
 - Show image distribution charts in the UI.
 - Export accuracy rankings, confusion matrices, and per-image predictions.
@@ -18,7 +19,9 @@ This is a small PyTorch image classification project for distinguishing `nailong
 .
 |-- nailong_model.py
 |-- train_nailong_naiwa.py
+|-- train_pretrained_classifier.py
 |-- predict_nailong_naiwa_ui.py
+|-- multimodal_llm.py
 |-- compare_nailong_algorithms.py
 |-- visualize_dataset_distribution.py
 |-- preprocess_naiwa_watermarks.py
@@ -46,6 +49,20 @@ python train_nailong_naiwa.py --cpu --epochs 12 --repeats 3 --batch-size 16 --im
 
 The training script rebuilds the balanced experiment dataset, creates splits, trains the CNN, and saves a checkpoint under `models/`.
 
+## Fine-tune a Pretrained Model
+
+```powershell
+python train_pretrained_classifier.py --cpu --arch resnet18 --epochs 10 --batch-size 16 --image-size 160 --freeze-backbone --out models/nailong_naiwa_resnet18_head.pt
+```
+
+This loads an ImageNet-pretrained backbone, replaces the final classification head with a two-class Nailong/Naiwa head, and fine-tunes it on `nailong_naiwa_splits/train`. The saved `.pt` file can be evaluated and compared with the existing CNN models:
+
+```powershell
+python compare_nailong_algorithms.py --data nailong_naiwa_splits/test --split-dir nailong_naiwa_splits --models-dir models --out-dir reports --cpu
+```
+
+For a stricter comparison against training from scratch with the same architecture, add `--random-init`.
+
 ## Run the UI
 
 ```powershell
@@ -61,6 +78,7 @@ http://127.0.0.1:8770
 The UI supports:
 
 - `CNN deep model`
+- `Cloud multimodal LLM`
 - `Compare all algorithms`
 - `Color mean prototype`
 - `RGB histogram prototype`
@@ -68,6 +86,16 @@ The UI supports:
 - `Edge histogram prototype`
 
 It also displays train / test / generalization image distribution and confidence hints.
+
+To enable the cloud multimodal LLM option, set an OpenAI-compatible API key before starting the UI:
+
+```powershell
+$env:OPENAI_API_KEY="your_api_key"
+$env:OPENAI_MODEL="gpt-4o-mini"
+python predict_nailong_naiwa_ui.py --host 127.0.0.1 --port 8770 --cpu
+```
+
+For another OpenAI-compatible provider, also set `OPENAI_BASE_URL`, for example `https://example.com/v1`. Without `OPENAI_API_KEY`, the CNN and classic algorithms still work, and the LLM option will show a configuration error.
 
 ## Compare Algorithms
 
@@ -90,6 +118,7 @@ Current test-set ranking:
 | RGB histogram prototype | 85.37% |
 | Color mean prototype | 78.05% |
 | Edge histogram prototype | 58.54% |
+| ResNet18 pretrained head | 48.78% |
 
 ## Dataset Distribution
 

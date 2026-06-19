@@ -6,6 +6,7 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageFilter, ImageOps
 from torch import nn
+from torchvision import models
 from torchvision import transforms
 
 
@@ -105,6 +106,42 @@ class LegacySmallImageCNN(nn.Module):
         return self.classifier(self.features(x))
 
 
+def build_torchvision_classifier(
+    architecture: str,
+    num_classes: int,
+    pretrained: bool = False,
+) -> nn.Module:
+    architecture = architecture.lower()
+    if architecture == "resnet18":
+        weights = models.ResNet18_Weights.DEFAULT if pretrained else None
+        model = models.resnet18(weights=weights)
+        model.fc = nn.Linear(model.fc.in_features, num_classes)
+        return model
+    if architecture == "mobilenet_v3_small":
+        weights = models.MobileNet_V3_Small_Weights.DEFAULT if pretrained else None
+        model = models.mobilenet_v3_small(weights=weights)
+        in_features = model.classifier[-1].in_features
+        model.classifier[-1] = nn.Linear(in_features, num_classes)
+        return model
+    raise ValueError(f"Unsupported pretrained architecture: {architecture}")
+
+
+def freeze_backbone(model: nn.Module, architecture: str) -> None:
+    architecture = architecture.lower()
+    for parameter in model.parameters():
+        parameter.requires_grad = False
+
+    if architecture == "resnet18":
+        for parameter in model.fc.parameters():
+            parameter.requires_grad = True
+        return
+    if architecture == "mobilenet_v3_small":
+        for parameter in model.classifier.parameters():
+            parameter.requires_grad = True
+        return
+    raise ValueError(f"Unsupported pretrained architecture: {architecture}")
+
+
 class ClassAwareImageFolder(torch.utils.data.Dataset):
     def __init__(
         self,
@@ -175,12 +212,14 @@ def save_checkpoint(
     class_to_idx: dict[str, int],
     image_size: int = IMAGE_SIZE,
     metadata: dict[str, object] | None = None,
+    architecture: str = "small_cnn",
 ) -> None:
     payload = {
         "state_dict": model.state_dict(),
         "class_to_idx": class_to_idx,
         "image_size": image_size,
         "metadata": metadata or {},
+        "architecture": architecture,
     }
     torch.save(payload, path)
 
@@ -190,12 +229,16 @@ def load_checkpoint(path: str | Path, device: torch.device) -> tuple[nn.Module, 
     class_to_idx = payload["class_to_idx"]
     classes = [name for name, _ in sorted(class_to_idx.items(), key=lambda item: item[1])]
     image_size = int(payload.get("image_size", IMAGE_SIZE))
+    architecture = str(payload.get("architecture", "small_cnn"))
 
-    first_conv = payload["state_dict"].get("features.0.weight")
-    if first_conv is not None and tuple(first_conv.shape[:2]) == (16, 3):
-        model: nn.Module = LegacySmallImageCNN(num_classes=len(classes)).to(device)
+    if architecture in {"resnet18", "mobilenet_v3_small"}:
+        model = build_torchvision_classifier(architecture, len(classes), pretrained=False).to(device)
     else:
-        model = SmallImageCNN(num_classes=len(classes)).to(device)
+        first_conv = payload["state_dict"].get("features.0.weight")
+        if first_conv is not None and tuple(first_conv.shape[:2]) == (16, 3):
+            model = LegacySmallImageCNN(num_classes=len(classes)).to(device)
+        else:
+            model = SmallImageCNN(num_classes=len(classes)).to(device)
     model.load_state_dict(payload["state_dict"])
     model.eval()
     return model, classes, image_size, dict(payload.get("metadata", {}))

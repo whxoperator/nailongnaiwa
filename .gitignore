@@ -8,6 +8,8 @@ logs/
 # Local/temporary rendering output
 report_render/
 report_pages/
+.torch_cache/
+tmp_smoke_models/
 
 # Large generated or local-only artifacts
 raw_uploads/

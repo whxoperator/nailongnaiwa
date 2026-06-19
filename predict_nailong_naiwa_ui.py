@@ -23,12 +23,14 @@ from nailong_algorithms import (
     predict_traditional,
 )
 from nailong_model import load_checkpoint, predict_image
+from multimodal_llm import predict_with_multimodal_llm
 
 
 LABEL_TEXT = {"nailong": "Nailong", "naiwa": "Naiwa"}
 SPLIT_WEIGHTS = (("train", 0.70), ("test", 0.15), ("generalization", 0.15))
 CNN_ALGORITHM = "cnn"
 COMPARE_ALL = "compare_all"
+CLOUD_LLM = "cloud_llm"
 
 
 PAGE = """<!doctype html>
@@ -188,6 +190,16 @@ PAGE = """<!doctype html>
     .confidence.medium { border-color: #b7791f; color: #7a4d12; background: #fff8e8; }
     .confidence.low { border-color: #c2410c; color: #8a2c0a; background: #fff2ec; }
     .compare-card strong { display: block; margin-bottom: 8px; }
+    .llm-note {
+      margin: 4px 0 14px;
+      padding: 10px 12px;
+      border-left: 4px solid #6d5dfc;
+      border-radius: 4px;
+      background: #f4f3ff;
+      color: #344054;
+      font-size: 13px;
+      line-height: 1.55;
+    }
     @media (max-width: 860px) {
       .grid, .result, .split-grid, .compare-grid { grid-template-columns: 1fr; }
       main { padding: 14px; }
@@ -232,6 +244,7 @@ PAGE = """<!doctype html>
 def algorithm_options(selected: str) -> str:
     items = [
         (CNN_ALGORITHM, "CNN deep model"),
+        (CLOUD_LLM, "Cloud multimodal LLM"),
         (COMPARE_ALL, "Compare all algorithms"),
         *TRADITIONAL_ALGORITHMS.items(),
     ]
@@ -302,8 +315,10 @@ def result_html(
     algorithm_label: str,
     predicted: str,
     scores: dict[str, float],
+    note: str = "",
 ) -> str:
     level = confidence_level(scores)
+    note_html = f'<div class="llm-note">{html.escape(note)}</div>' if note else ""
     return f"""
     <section class="panel result">
       <img class="preview" src="{image_data_uri(image_path)}" alt="uploaded image" />
@@ -312,6 +327,7 @@ def result_html(
         <span class="confidence {html.escape(level)}">{html.escape(level)} confidence</span>
         <h2>Prediction: {html.escape(label_display(predicted))}</h2>
         <p class="muted">{html.escape(explain_confidence(scores))}</p>
+        {note_html}
         {score_rows(scores)}
         <form method="post">
           <input type="hidden" name="action" value="accept" />
@@ -385,7 +401,7 @@ def random_split(rng: random.Random) -> str:
 
 
 def make_handler(args: argparse.Namespace):
-    device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
+    device = torch.device("cuda" if not args.cpu and torch.cuda.is_available() else "cpu")
     upload_dir = Path(tempfile.mkdtemp(prefix="nailong_predict_uploads_"))
     rng = random.Random(args.seed)
     cache: dict[Path, tuple[torch.nn.Module, list[str], int, dict[str, object]]] = {}
@@ -413,11 +429,15 @@ def make_handler(args: argparse.Namespace):
     def selected_algorithm(value: str | None) -> str:
         if value in {CNN_ALGORITHM, COMPARE_ALL} or value in TRADITIONAL_ALGORITHMS:
             return value
+        if value == CLOUD_LLM:
+            return value
         return CNN_ALGORITHM
 
     def algorithm_label(value: str) -> str:
         if value == CNN_ALGORITHM:
             return "CNN deep model"
+        if value == CLOUD_LLM:
+            return "Cloud multimodal LLM"
         if value == COMPARE_ALL:
             return "Compare all algorithms"
         return TRADITIONAL_ALGORITHMS[value]
@@ -522,6 +542,17 @@ def make_handler(args: argparse.Namespace):
                 if algorithm == CNN_ALGORITHM:
                     predicted, scores = run_cnn(model_path, image_path)
                     result = result_html(image_path, model_path, algorithm, algorithm_label(algorithm), predicted, scores)
+                elif algorithm == CLOUD_LLM:
+                    predicted, scores, reasoning = predict_with_multimodal_llm(image_path)
+                    result = result_html(
+                        image_path,
+                        model_path,
+                        algorithm,
+                        algorithm_label(algorithm),
+                        predicted,
+                        scores,
+                        note=reasoning,
+                    )
                 elif algorithm == COMPARE_ALL:
                     result = comparison_html(image_path, compare_all(model_path, image_path))
                 else:

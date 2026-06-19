@@ -1,0 +1,205 @@
+{"kind":"deck","id":"pr/gsa5e2","name":"Deck"}
+{"kind":"layout","layoutId":"3dcf96cd-f002-4da7-b5b9-b9c72f8ce059","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"bad567f5-d7f5-4f47-9d5f-0ea2750c4782","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/66m3j9","slide":1,"title":"奶龙还是奶蛙？","textShapes":5}
+{"kind":"shape","id":"sh/tgfmlkjm","slide":1,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":1,"bbox":[742,62,405,405]}
+{"kind":"textbox","id":"sh/47y1kre1","slide":1,"text":"奶龙还是奶蛙？","textPreview":"奶龙还是奶蛙？","textChars":7,"textLines":1,"bbox":[72,86,640,64]}
+{"kind":"textbox","id":"sh/tsvu9kni","slide":1,"text":"一个图像分类项目的诞生","textPreview":"一个图像分类项目的诞生","textChars":11,"textLines":1,"bbox":[76,170,680,100]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":1,"text":"从网络图片识别的必要性出发，完成数据整理、CNN 训练、Web 交互、算法对比与 GitHub 版本迭代。","textPreview":"从网络图片识别的必要性出发，完成数据整理、CNN 训练、Web 交互、算法对比与 GitHub 版本迭代。","textChars":53,"textLines":1,"bbox":[78,304,610,92]}
+{"kind":"shape","id":"sh/bm58z25k","slide":1,"bbox":[78,472,250,44]}
+{"kind":"textbox","id":"sh/4byhgn29","slide":1,"text":"项目汇报 PPT","textPreview":"项目汇报 PPT","textChars":8,"textLines":1,"bbox":[96,482,214,26]}
+{"kind":"textbox","id":"sh/twra5gbq","slide":1,"text":"PyTorch · Local Web UI · Algorithm Comparison · GitHub commits","textPreview":"PyTorch · Local Web UI · Algorithm Comparison · GitHub commits","textChars":62,"textLines":1,"bbox":[78,640,660,26]}
+{"kind":"image","id":"im/upwb2hwf","slide":1,"name":"","alt":"nailong sample","bbox":[780,92,330,330]}
+{"kind":"notes","id":"nt/66m3j9","slide":1,"text":""}
+{"kind":"slide","id":"sl/d0xi66","slide":2,"title":"Nailong / Naiwa Image Classifier","textShapes":10}
+{"kind":"shape","id":"sh/7u54zido","slide":2,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/wfyxobm5","slide":2,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/l0rqd4vm","slide":2,"text":"为什么这个项目是必要的？","textPreview":"为什么这个项目是必要的？","textChars":12,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/eloj2t83","slide":2,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/36hcrmhk","slide":2,"bbox":[82,220,330,250]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":2,"text":"图像是信息载体","textPreview":"图像是信息载体","textChars":7,"textLines":1,"bbox":[110,248,270,42]}
+{"kind":"textbox","id":"sh/lc7u54zi","slide":2,"text":"表情包、截图、角色图和二创内容，都需要被机器理解和管理。","textPreview":"表情包、截图、角色图和二创内容，都需要被机器理解和管理。","textChars":28,"textLines":1,"bbox":[110,312,270,112]}
+{"kind":"shape","id":"sh/epkzupwb","slide":2,"bbox":[110,444,70,6]}
+{"kind":"shape","id":"sh/7adsji5s","slide":2,"bbox":[464,220,330,250]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":2,"text":"分类是第一步","textPreview":"分类是第一步","textChars":6,"textLines":1,"bbox":[492,248,270,42]}
+{"kind":"textbox","id":"sh/u54zidon","slide":2,"text":"只有先判断“这是什么”，后面才有搜索、归档、清洗和推荐。","textPreview":"只有先判断“这是什么”，后面才有搜索、归档、清洗和推荐。","textChars":28,"textLines":1,"bbox":[492,312,270,112]}
+{"kind":"shape","id":"sh/5sneloj2","slide":2,"bbox":[492,444,70,6]}
+{"kind":"shape","id":"sh/cbulwval","slide":2,"bbox":[846,220,330,250]}
+{"kind":"textbox","id":"sh/neloj2t8","slide":2,"text":"奶龙 / 奶蛙是具体入口","textPreview":"奶龙 / 奶蛙是具体入口","textChars":12,"textLines":1,"bbox":[874,248,270,42]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":2,"text":"对象很可爱，但任务本质是让计算机从相似图片中提取差异。","textPreview":"对象很可爱，但任务本质是让计算机从相似图片中提取差异。","textChars":27,"textLines":1,"bbox":[874,312,270,112]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":2,"bbox":[874,444,70,6]}
+{"kind":"textbox","id":"sh/czed8v6p","slide":2,"text":"它不是“做着玩”的分类器，而是数据整理、功能扩展和智能分析的基础环节。","textPreview":"它不是“做着玩”的分类器，而是数据整理、功能扩展和智能分析的基础环节。","textChars":35,"textLines":1,"bbox":[92,560,1030,48]}
+{"kind":"textbox","id":"sh/n29gr2p8","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/d0xi66","slide":2,"text":""}
+{"kind":"slide","id":"sl/ceisna","slide":3,"title":"Nailong / Naiwa Image Classifier","textShapes":10}
+{"kind":"shape","id":"sh/loj2t83i","slide":3,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/ex0nuxc3","slide":3,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/3itgfmlk","slide":3,"text":"数据来源与样例","textPreview":"数据来源与样例","textChars":7,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/wb2hwfyx","slide":3,"bbox":[58,152,88,6]}
+{"kind":"textbox","id":"sh/lwval87e","slide":3,"text":"数据来自 GitHub 开源项目 spawner1145/NailongRecognize，以及从小红书等平台下载整理的图片。","textPreview":"数据来自 GitHub 开源项目 spawner1145/NailongRecognize，以及从小红书等平台下载整理的图片。","textChars":63,"textLines":1,"bbox":[84,178,1020,46]}
+{"kind":"shape","id":"sh/e9cvixcz","slide":3,"bbox":[78,260,342,310]}
+{"kind":"textbox","id":"sh/sneloj2t","slide":3,"text":"奶龙样例","textPreview":"奶龙样例","textChars":4,"textLines":1,"bbox":[102,504,290,28]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":3,"text":"典型外观清晰","textPreview":"典型外观清晰","textChars":6,"textLines":1,"bbox":[102,536,290,26]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":3,"bbox":[468,260,342,310]}
+{"kind":"textbox","id":"sh/neloj2t8","slide":3,"text":"奶蛙样例","textPreview":"奶蛙样例","textChars":4,"textLines":1,"bbox":[492,504,290,28]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":3,"text":"场景复杂、风格多样","textPreview":"场景复杂、风格多样","textChars":9,"textLines":1,"bbox":[492,536,290,26]}
+{"kind":"shape","id":"sh/5sneloj2","slide":3,"bbox":[858,260,342,310]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":3,"text":"奶蛙样例","textPreview":"奶蛙样例","textChars":4,"textLines":1,"bbox":[882,504,290,28]}
+{"kind":"textbox","id":"sh/u54zidon","slide":3,"text":"带文字与强背景效果","textPreview":"带文字与强背景效果","textChars":9,"textLines":1,"bbox":[882,536,290,26]}
+{"kind":"textbox","id":"sh/5wjudg7a","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"image","id":"im/65wjudg7","slide":3,"name":"","alt":"奶龙样例","bbox":[96,278,306,210]}
+{"kind":"image","id":"im/je9cvixc","slide":3,"name":"","alt":"奶蛙样例","bbox":[486,278,306,210]}
+{"kind":"image","id":"im/fmlkjm1c","slide":3,"name":"","alt":"奶蛙样例","bbox":[876,278,306,210]}
+{"kind":"notes","id":"nt/ceisna","slide":3,"text":""}
+{"kind":"slide","id":"sl/lgsywh","slide":4,"title":"Nailong / Naiwa Image Classifier","textShapes":16}
+{"kind":"shape","id":"sh/0fepkzup","slide":4,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/bulwval8","slide":4,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/i9s36hcr","slide":4,"text":"从图片到结果：项目流程","textPreview":"从图片到结果：项目流程","textChars":11,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/tovahoza","slide":4,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/032lszqt","slide":4,"bbox":[82,205,320,112]}
+{"kind":"textbox","id":"sh/bi9s36hc","slide":4,"text":"收集数据","textPreview":"收集数据","textChars":4,"textLines":1,"bbox":[106,229,270,30]}
+{"kind":"textbox","id":"sh/ixczed8v","slide":4,"text":"GitHub + 小红书","textPreview":"GitHub + 小红书","textChars":12,"textLines":1,"bbox":[106,267,270,26]}
+{"kind":"shape","id":"sh/tcj6tova","slide":4,"bbox":[412,257,28,6]}
+{"kind":"shape","id":"sh/0rqd4vmt","slide":4,"bbox":[464,205,320,112]}
+{"kind":"textbox","id":"sh/i9s36hcr","slide":4,"text":"预处理","textPreview":"预处理","textChars":3,"textLines":1,"bbox":[488,229,270,30]}
+{"kind":"textbox","id":"sh/bulwval8","slide":4,"text":"水印弱化 / 数据增强","textPreview":"水印弱化 / 数据增强","textChars":11,"textLines":1,"bbox":[488,267,270,26]}
+{"kind":"shape","id":"sh/0fepkzup","slide":4,"bbox":[794,257,28,6]}
+{"kind":"shape","id":"sh/p0bi9s36","slide":4,"bbox":[846,205,320,112]}
+{"kind":"textbox","id":"sh/ixczed8v","slide":4,"text":"划分数据","textPreview":"划分数据","textChars":4,"textLines":1,"bbox":[870,229,270,30]}
+{"kind":"textbox","id":"sh/bi9s36hc","slide":4,"text":"train / test / generalization","textPreview":"train / test / generalization","textChars":29,"textLines":1,"bbox":[870,267,270,26]}
+{"kind":"shape","id":"sh/032lszqt","slide":4,"bbox":[82,381,320,112]}
+{"kind":"textbox","id":"sh/tovahoza","slide":4,"text":"训练模型","textPreview":"训练模型","textChars":4,"textLines":1,"bbox":[106,405,270,30]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":4,"text":"轻量级 CNN","textPreview":"轻量级 CNN","textChars":7,"textLines":1,"bbox":[106,443,270,26]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":4,"bbox":[412,433,28,6]}
+{"kind":"shape","id":"sh/32lszqtc","slide":4,"bbox":[464,381,320,112]}
+{"kind":"textbox","id":"sh/ahoza1gv","slide":4,"text":"交互预测","textPreview":"交互预测","textChars":4,"textLines":1,"bbox":[488,405,270,30]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":4,"text":"本地 Web UI","textPreview":"本地 Web UI","textChars":9,"textLines":1,"bbox":[488,443,270,26]}
+{"kind":"shape","id":"sh/sneloj2t","slide":4,"bbox":[794,433,28,6]}
+{"kind":"shape","id":"sh/3ex0nuxc","slide":4,"bbox":[846,381,320,112]}
+{"kind":"textbox","id":"sh/at47y1kr","slide":4,"text":"输出报告","textPreview":"输出报告","textChars":4,"textLines":1,"bbox":[870,405,270,30]}
+{"kind":"textbox","id":"sh/lkjm1cfa","slide":4,"text":"准确率 / 混淆矩阵","textPreview":"准确率 / 混淆矩阵","textChars":10,"textLines":1,"bbox":[870,443,270,26]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":4,"text":"核心目标：把抽象算法变成可看、可点、可验证的识别流程。","textPreview":"核心目标：把抽象算法变成可看、可点、可验证的识别流程。","textChars":27,"textLines":1,"bbox":[120,600,980,38]}
+{"kind":"textbox","id":"sh/3itgfmlk","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/lgsywh","slide":4,"text":""}
+{"kind":"slide","id":"sl/4lo4sz","slide":5,"title":"Nailong / Naiwa Image Classifier","textShapes":12}
+{"kind":"shape","id":"sh/kf6dcbul","slide":5,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/vu9knih4","slide":5,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/29gr2p8n","slide":5,"text":"交互界面：让模型真正可用","textPreview":"交互界面：让模型真正可用","textChars":12,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/d8bat47y","slide":5,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/knih4byh","slide":5,"bbox":[82,190,520,360]}
+{"kind":"textbox","id":"sh/v6psfil0","slide":5,"text":"Web UI 功能","textPreview":"Web UI 功能","textChars":9,"textLines":1,"bbox":[112,222,430,34]}
+{"kind":"textbox","id":"sh/2lszqtcj","slide":5,"text":"• 上传图片并预览","textPreview":"• 上传图片并预览","textChars":9,"textLines":1,"bbox":[122,288,410,28]}
+{"kind":"textbox","id":"sh/dcbulwva","slide":5,"text":"• 选择 CNN 模型或传统算法","textPreview":"• 选择 CNN 模型或传统算法","textChars":16,"textLines":1,"bbox":[122,336,410,28]}
+{"kind":"textbox","id":"sh/kre1w7mp","slide":5,"text":"• 显示预测类别与置信度条","textPreview":"• 显示预测类别与置信度条","textChars":13,"textLines":1,"bbox":[122,384,410,28]}
+{"kind":"textbox","id":"sh/6psfil0r","slide":5,"text":"• Compare all algorithms 横向对比","textPreview":"• Compare all algorithms 横向对比","textChars":29,"textLines":1,"bbox":[122,432,410,28]}
+{"kind":"textbox","id":"sh/val87ed8","slide":5,"text":"• 接受正确结果并补充到数据集","textPreview":"• 接受正确结果并补充到数据集","textChars":15,"textLines":1,"bbox":[122,480,410,28]}
+{"kind":"shape","id":"sh/kre1w7mp","slide":5,"bbox":[665,190,475,360]}
+{"kind":"textbox","id":"sh/dcbulwva","slide":5,"text":"演示时重点讲","textPreview":"演示时重点讲","textChars":6,"textLines":1,"bbox":[700,226,380,34]}
+{"kind":"textbox","id":"sh/2x4nap4r","slide":5,"text":"用户看到的不只是一个冷冰冰的分类结果，还能知道模型这次到底有多确定。","textPreview":"用户看到的不只是一个冷冰冰的分类结果，还能知道模型这次到底有多确定。","textChars":34,"textLines":1,"bbox":[700,294,380,124]}
+{"kind":"textbox","id":"sh/vixczed8","slide":5,"text":"本地地址：127.0.0.1:8770","textPreview":"本地地址：127.0.0.1:8770","textChars":19,"textLines":1,"bbox":[700,444,360,56]}
+{"kind":"textbox","id":"sh/k3q5o7qp","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/4lo4sz","slide":5,"text":""}
+{"kind":"slide","id":"sl/e699ca","slide":6,"title":"Nailong / Naiwa Image Classifier","textShapes":8}
+{"kind":"shape","id":"sh/hcrmhk3q","slide":6,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/al87ed8b","slide":6,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/z61032ls","slide":6,"text":"算法对比：CNN 效果最好，但基线也有价值","textPreview":"算法对比：CNN 效果最好，但基线也有价值","textChars":21,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/sfil0rqd","slide":6,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/a9w3m94f","slide":6,"bbox":[810,210,330,292]}
+{"kind":"textbox","id":"sh/zupwb2hw","slide":6,"text":"测试集结果","textPreview":"测试集结果","textChars":5,"textLines":1,"bbox":[838,240,270,30]}
+{"kind":"textbox","id":"sh/obm58z25","slide":6,"text":"37 / 41","textPreview":"37 / 41","textChars":7,"textLines":1,"bbox":[840,294,250,58]}
+{"kind":"textbox","id":"sh/hwfyxobm","slide":6,"text":"CNN balanced 正确数","textPreview":"CNN balanced 正确数","textChars":16,"textLines":1,"bbox":[842,354,250,24]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":6,"text":"准确率约 90.24%","textPreview":"准确率约 90.24%","textChars":11,"textLines":1,"bbox":[840,410,250,42]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":6,"text":"传统算法作为对照基线，帮助判断深度模型是否真正学到了有效特征。","textPreview":"传统算法作为对照基线，帮助判断深度模型是否真正学到了有效特征。","textChars":31,"textLines":1,"bbox":[108,596,980,38]}
+{"kind":"textbox","id":"sh/b2hwfyxo","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"chart","id":"ch/1cfa9w3m","slide":6,"name":"","chartType":"bar","bbox":[94,205,660,330]}
+{"kind":"notes","id":"nt/e699ca","slide":6,"text":""}
+{"kind":"slide","id":"sl/rdtuu6","slide":7,"title":"Nailong / Naiwa Image Classifier","textShapes":19}
+{"kind":"shape","id":"sh/onyd0z61","slide":7,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/z25kb6xk","slide":7,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/6hcrmhk3","slide":7,"text":"GitHub commits：从上传到完整流程","textPreview":"GitHub commits：从上传到完整流程","textChars":23,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/dg7adsji","slide":7,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/ovahoza1","slide":7,"bbox":[150,238,920,4]}
+{"kind":"shape","id":"sh/vahoza1g","slide":7,"bbox":[141,230,22,22]}
+{"kind":"textbox","id":"sh/6tovahoz","slide":7,"text":"2026-06-16","textPreview":"2026-06-16","textChars":10,"textLines":1,"bbox":[86,260,150,22]}
+{"kind":"shape","id":"sh/dsji5sne","slide":7,"bbox":[60,298,180,180]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":7,"text":"Initial commit / Add files via upload","textPreview":"Initial commit / Add files via upload","textChars":37,"textLines":1,"bbox":[78,320,146,54]}
+{"kind":"textbox","id":"sh/q5o7qpg3","slide":7,"text":"项目开始上传，建立基础仓库。","textPreview":"项目开始上传，建立基础仓库。","textChars":14,"textLines":1,"bbox":[78,392,146,70]}
+{"kind":"shape","id":"sh/jqh0fepk","slide":7,"bbox":[371,230,22,22]}
+{"kind":"textbox","id":"sh/8bat47y1","slide":7,"text":"2026-06-16","textPreview":"2026-06-16","textChars":10,"textLines":1,"bbox":[316,260,150,22]}
+{"kind":"shape","id":"sh/1w7mp0bi","slide":7,"bbox":[290,298,180,180]}
+{"kind":"textbox","id":"sh/qh0fepkz","slide":7,"text":"Add image datasets","textPreview":"Add image datasets","textChars":18,"textLines":1,"bbox":[308,320,146,54]}
+{"kind":"textbox","id":"sh/j2t83itg","slide":7,"text":"加入图像数据，为训练和测试打基础。","textPreview":"加入图像数据，为训练和测试打基础。","textChars":17,"textLines":1,"bbox":[308,392,146,70]}
+{"kind":"shape","id":"sh/8nqxs72x","slide":7,"bbox":[601,230,22,22]}
+{"kind":"textbox","id":"sh/18jqh0fe","slide":7,"text":"2026-06-17","textPreview":"2026-06-17","textChars":10,"textLines":1,"bbox":[546,260,150,22]}
+{"kind":"shape","id":"sh/ulwval87","slide":7,"bbox":[520,298,180,180]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":7,"text":"Add selectable algorithms and dataset visualization","textPreview":"Add selectable algorithms and dataset visualization","textChars":51,"textLines":1,"bbox":[538,320,146,54]}
+{"kind":"textbox","id":"sh/b2hwfyxo","slide":7,"text":"加入算法选择与数据分布展示。","textPreview":"加入算法选择与数据分布展示。","textChars":14,"textLines":1,"bbox":[538,392,146,70]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":7,"bbox":[831,230,22,22]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":7,"text":"2026-06-17","textPreview":"2026-06-17","textChars":10,"textLines":1,"bbox":[776,260,150,22]}
+{"kind":"shape","id":"sh/4nap4r65","slide":7,"bbox":[750,298,180,180]}
+{"kind":"textbox","id":"sh/bq1oryts","slide":7,"text":"Add algorithm comparison workflow","textPreview":"Add algorithm comparison workflow","textChars":33,"textLines":1,"bbox":[768,320,146,54]}
+{"kind":"textbox","id":"sh/m58z25kb","slide":7,"text":"形成批量算法对比与报告输出。","textPreview":"形成批量算法对比与报告输出。","textChars":14,"textLines":1,"bbox":[768,392,146,70]}
+{"kind":"shape","id":"sh/twra5gbq","slide":7,"bbox":[1061,230,22,22]}
+{"kind":"textbox","id":"sh/4byhgn29","slide":7,"text":"2026-06-17","textPreview":"2026-06-17","textChars":10,"textLines":1,"bbox":[1006,260,150,22]}
+{"kind":"shape","id":"sh/bm58z25k","slide":7,"bbox":[980,298,180,180]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":7,"text":"Refresh project README","textPreview":"Refresh project README","textChars":22,"textLines":1,"bbox":[998,320,146,54]}
+{"kind":"textbox","id":"sh/wval87ed","slide":7,"text":"完善 README，并加入 co-author 信息。","textPreview":"完善 README，并加入 co-author 信息。","textChars":27,"textLines":1,"bbox":[998,392,146,70]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":7,"text":"这条提交线对应了开发节奏：先传上去，再补数据、补界面、补算法对比，最后整理说明文档。","textPreview":"这条提交线对应了开发节奏：先传上去，再补数据、补界面、补算法对比，最后整理说明文档。","textChars":42,"textLines":1,"bbox":[116,580,980,54]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/rdtuu6","slide":7,"text":""}
+{"kind":"slide","id":"sl/aucj2t","slide":8,"title":"Nailong / Naiwa Image Classifier","textShapes":10}
+{"kind":"shape","id":"sh/d0z61032","slide":8,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/29gr2p8n","slide":8,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/vu9knih4","slide":8,"text":"开发过程：第一次完整上传，也是真的花了力气","textPreview":"开发过程：第一次完整上传，也是真的花了力气","textChars":21,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/knih4byh","slide":8,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/d8bat47y","slide":8,"bbox":[120,202,1000,88]}
+{"kind":"textbox","id":"sh/2lszqtcj","slide":8,"text":"第一次完整上传 GitHub","textPreview":"第一次完整上传 GitHub","textChars":14,"textLines":1,"bbox":[152,224,280,28]}
+{"kind":"textbox","id":"sh/v6psfil0","slide":8,"text":"仓库结构、提交记录、README 和文件路径都需要边做边学。","textPreview":"仓库结构、提交记录、README 和文件路径都需要边做边学。","textChars":30,"textLines":1,"bbox":[472,226,590,28]}
+{"kind":"shape","id":"sh/kre1w7mp","slide":8,"bbox":[120,328,1000,88]}
+{"kind":"textbox","id":"sh/dcbulwva","slide":8,"text":"功能不是一次成型","textPreview":"功能不是一次成型","textChars":8,"textLines":1,"bbox":[152,350,280,28]}
+{"kind":"textbox","id":"sh/lszqtcj6","slide":8,"text":"数据、模型、UI、算法对比是在多次 commit 中逐步补齐的。","textPreview":"数据、模型、UI、算法对比是在多次 commit 中逐步补齐的。","textChars":32,"textLines":1,"bbox":[472,352,590,28]}
+{"kind":"shape","id":"sh/s72x4nap","slide":8,"bbox":[120,454,1000,88]}
+{"kind":"textbox","id":"sh/3m94fu18","slide":8,"text":"项目价值不只在模型","textPreview":"项目价值不只在模型","textChars":9,"textLines":1,"bbox":[152,476,280,28]}
+{"kind":"textbox","id":"sh/a5gbq1or","slide":8,"text":"完整经历了数据收集、训练、评估、展示和版本管理。","textPreview":"完整经历了数据收集、训练、评估、展示和版本管理。","textChars":24,"textLines":1,"bbox":[472,478,590,28]}
+{"kind":"textbox","id":"sh/h4byhgn2","slide":8,"text":"课程项目不只是让模型跑起来，也要让项目真正“交得出去、看得明白”。","textPreview":"课程项目不只是让模型跑起来，也要让项目真正“交得出去、看得明白”。","textChars":33,"textLines":1,"bbox":[154,600,900,36]}
+{"kind":"textbox","id":"sh/sji5snel","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/aucj2t","slide":8,"text":""}
+{"kind":"slide","id":"sl/7utvaa","slide":9,"title":"Nailong / Naiwa Image Classifier","textShapes":12}
+{"kind":"shape","id":"sh/m94fu18j","slide":9,"bbox":[0,0,1280,70]}
+{"kind":"textbox","id":"sh/x0nuxc3y","slide":9,"text":"Nailong / Naiwa Image Classifier","textPreview":"Nailong / Naiwa Image Classifier","textChars":32,"textLines":1,"bbox":[58,22,620,28]}
+{"kind":"textbox","id":"sh/4fu18jqh","slide":9,"text":"不足：清楚知道边界，才方便继续扩展","textPreview":"不足：清楚知道边界，才方便继续扩展","textChars":17,"textLines":1,"bbox":[58,92,780,54]}
+{"kind":"shape","id":"sh/fil0rqd4","slide":9,"bbox":[58,152,88,6]}
+{"kind":"shape","id":"sh/qxs72x4n","slide":9,"bbox":[92,205,500,112]}
+{"kind":"textbox","id":"sh/xobm58z2","slide":9,"text":"数据量偏小","textPreview":"数据量偏小","textChars":5,"textLines":1,"bbox":[120,227,420,30]}
+{"kind":"textbox","id":"sh/83itgfml","slide":9,"text":"测试集只有 41 张，准确率有偶然性。","textPreview":"测试集只有 41 张，准确率有偶然性。","textChars":19,"textLines":1,"bbox":[120,267,420,28]}
+{"kind":"shape","id":"sh/fepkzupw","slide":9,"bbox":[657,205,500,112]}
+{"kind":"textbox","id":"sh/mtwra5gb","slide":9,"text":"类别有限","textPreview":"类别有限","textChars":4,"textLines":1,"bbox":[685,227,420,30]}
+{"kind":"textbox","id":"sh/oj2t83it","slide":9,"text":"只能区分奶龙和奶蛙，不能处理无关图片。","textPreview":"只能区分奶龙和奶蛙，不能处理无关图片。","textChars":19,"textLines":1,"bbox":[685,267,420,28]}
+{"kind":"shape","id":"sh/d4vmtwra","slide":9,"bbox":[92,365,500,112]}
+{"kind":"textbox","id":"sh/6dcbulwv","slide":9,"text":"泛化仍需验证","textPreview":"泛化仍需验证","textChars":6,"textLines":1,"bbox":[120,387,420,30]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":9,"text":"背景、水印、压缩质量都会影响判断。","textPreview":"背景、水印、压缩质量都会影响判断。","textChars":17,"textLines":1,"bbox":[120,427,420,28]}
+{"kind":"shape","id":"sh/o7qpg3ex","slide":9,"bbox":[657,365,500,112]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":9,"text":"功能未完全实现","textPreview":"功能未完全实现","textChars":7,"textLines":1,"bbox":[685,387,420,30]}
+{"kind":"textbox","id":"sh/61032lsz","slide":9,"text":"云端数据库、历史记录、多人协作还没做完。","textPreview":"云端数据库、历史记录、多人协作还没做完。","textChars":20,"textLines":1,"bbox":[685,427,420,28]}
+{"kind":"textbox","id":"sh/vmtwra5g","slide":9,"text":"时间原因让一些想法没能落地，但这些不足也正好指向后续优化方向。","textPreview":"时间原因让一些想法没能落地，但这些不足也正好指向后续优化方向。","textChars":31,"textLines":1,"bbox":[132,596,960,36]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1110,674,110,24]}
+{"kind":"notes","id":"nt/7utvaa","slide":9,"text":""}
+{"kind":"slide","id":"sl/y24ov8","slide":10,"title":"下一步：从本地小工具走向在线识别系统","textShapes":11}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":10,"text":"下一步：从本地小工具走向在线识别系统","textPreview":"下一步：从本地小工具走向在线识别系统","textChars":18,"textLines":1,"bbox":[72,72,760,54]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":10,"bbox":[76,150,120,7]}
+{"kind":"shape","id":"sh/czed8v6p","slide":10,"bbox":[92,258,236,180]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":10,"text":"扩数据","textPreview":"扩数据","textChars":3,"textLines":1,"bbox":[118,292,180,34]}
+{"kind":"textbox","id":"sh/u54zidon","slide":10,"text":"更多来源、更多画质、更多背景","textPreview":"更多来源、更多画质、更多背景","textChars":14,"textLines":1,"bbox":[116,352,188,60]}
+{"kind":"shape","id":"sh/5sneloj2","slide":10,"bbox":[378,258,236,180]}
+{"kind":"textbox","id":"sh/cbulwval","slide":10,"text":"查错样本","textPreview":"查错样本","textChars":4,"textLines":1,"bbox":[404,292,180,34]}
+{"kind":"textbox","id":"sh/nuxc3ylc","slide":10,"text":"整理易混淆图片，针对性补充训练","textPreview":"整理易混淆图片，针对性补充训练","textChars":15,"textLines":1,"bbox":[402,352,188,60]}
+{"kind":"shape","id":"sh/y90je9cv","slide":10,"bbox":[664,258,236,180]}
+{"kind":"textbox","id":"sh/oza1gvy9","slide":10,"text":"强 UI","textPreview":"强 UI","textChars":4,"textLines":1,"bbox":[690,292,180,34]}
+{"kind":"textbox","id":"sh/hk3q5o7q","slide":10,"text":"批量预测、历史记录、人工修正","textPreview":"批量预测、历史记录、人工修正","textChars":14,"textLines":1,"bbox":[688,352,188,60]}
+{"kind":"shape","id":"sh/6xkf6dcb","slide":10,"bbox":[950,258,236,180]}
+{"kind":"textbox","id":"sh/zed8v6ps","slide":10,"text":"上云端","textPreview":"上云端","textChars":3,"textLines":1,"bbox":[976,292,180,34]}
+{"kind":"textbox","id":"sh/obm58z25","slide":10,"text":"数据库保存上传、预测和标签记录","textPreview":"数据库保存上传、预测和标签记录","textChars":15,"textLines":1,"bbox":[974,352,188,60]}
+{"kind":"textbox","id":"sh/hwfyxobm","slide":10,"text":"总结：项目虽然不大，但已经完成从数据准备、模型训练、单图预测、算法对比到报告输出的完整闭环。","textPreview":"总结：项目虽然不大，但已经完成从数据准备、模型训练、单图预测、算法对比到报告输出的完整闭环。","textChars":46,"textLines":1,"bbox":[116,555,1040,70]}
+{"kind":"textbox","id":"sh/65wjudg7","slide":10,"text":"谢谢观看","textPreview":"谢谢观看","textChars":4,"textLines":1,"bbox":[380,650,520,24]}
+{"kind":"notes","id":"nt/y24ov8","slide":10,"text":""}
