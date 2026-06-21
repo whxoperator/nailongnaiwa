@@ -32,9 +32,20 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device) -> floa
     return correct / max(seen, 1)
 
 
+def resolve_image_size(args: argparse.Namespace) -> int:
+    if args.image_size is not None:
+        return args.image_size
+    if args.arch == "vit_b_16":
+        return 224
+    return IMAGE_SIZE
+
+
 def train(args: argparse.Namespace) -> Path:
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    image_size = resolve_image_size(args)
+    if args.arch == "vit_b_16" and image_size != 224:
+        raise SystemExit("vit_b_16 expects --image-size 224 because torchvision ViT uses fixed position embeddings.")
 
     split_dir = Path(args.split_dir)
     out_path = Path(args.out)
@@ -45,14 +56,14 @@ def train(args: argparse.Namespace) -> Path:
 
     train_dataset = ClassAwareImageFolder(
         split_dir / "train",
-        image_size=args.image_size,
+        image_size=image_size,
         augment=True,
         corner_augment_classes={"nailong"},
     )
-    test_dataset = ClassAwareImageFolder(split_dir / "test", image_size=args.image_size, augment=False)
+    test_dataset = ClassAwareImageFolder(split_dir / "test", image_size=image_size, augment=False)
     generalization_dataset = ClassAwareImageFolder(
         split_dir / "generalization",
-        image_size=args.image_size,
+        image_size=image_size,
         augment=False,
     )
 
@@ -76,6 +87,7 @@ def train(args: argparse.Namespace) -> Path:
     print(f"Classes: {train_dataset.class_to_idx}")
     print(f"Device: {device}")
     print(f"Architecture: {args.arch}")
+    print(f"Image size: {image_size}")
     print(f"Pretrained weights: {not args.random_init}")
     print(f"Freeze backbone: {args.freeze_backbone}")
 
@@ -130,7 +142,7 @@ def train(args: argparse.Namespace) -> Path:
         out_path,
         model,
         train_dataset.class_to_idx,
-        image_size=args.image_size,
+        image_size=image_size,
         metadata=metadata,
         architecture=args.arch,
     )
@@ -144,14 +156,14 @@ def build_parser() -> argparse.ArgumentParser:
         description="Fine-tune a pretrained image classifier on the Nailong/Naiwa dataset."
     )
     parser.add_argument("--split-dir", default="nailong_naiwa_splits")
-    parser.add_argument("--arch", choices=["resnet18", "mobilenet_v3_small"], default="resnet18")
+    parser.add_argument("--arch", choices=["resnet18", "mobilenet_v3_small", "vit_b_16"], default="resnet18")
     parser.add_argument("--out", default="models/nailong_naiwa_resnet18_finetuned.pt")
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--label-smoothing", type=float, default=0.04)
-    parser.add_argument("--image-size", type=int, default=IMAGE_SIZE)
+    parser.add_argument("--image-size", type=int, default=None)
     parser.add_argument("--print-every", type=int, default=2)
     parser.add_argument("--seed", type=int, default=23)
     parser.add_argument("--freeze-backbone", action="store_true", help="Only train the downstream classifier head.")

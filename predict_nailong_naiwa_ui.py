@@ -209,7 +209,7 @@ PAGE = """<!doctype html>
 <body>
   <header>
     <strong>Nailong / Naiwa Classifier</strong>
-    <span class="muted">CNN, classic image features, and algorithm comparison</span>
+    <span class="muted">Deep models, classic image features, and algorithm comparison</span>
   </header>
   <main>
     __MESSAGE__
@@ -221,7 +221,7 @@ PAGE = """<!doctype html>
           <select id="algorithm" name="algorithm">__ALGORITHM_OPTIONS__</select>
         </div>
         <div>
-          <label for="model">CNN model</label>
+          <label for="model">Deep model</label>
           <select id="model" name="model">__MODEL_OPTIONS__</select>
         </div>
         <div>
@@ -243,7 +243,7 @@ PAGE = """<!doctype html>
 
 def algorithm_options(selected: str) -> str:
     items = [
-        (CNN_ALGORITHM, "CNN deep model"),
+        (CNN_ALGORITHM, "Deep model"),
         (CLOUD_LLM, "Cloud multimodal LLM"),
         (COMPARE_ALL, "Compare all algorithms"),
         *TRADITIONAL_ALGORITHMS.items(),
@@ -435,7 +435,7 @@ def make_handler(args: argparse.Namespace):
 
     def algorithm_label(value: str) -> str:
         if value == CNN_ALGORITHM:
-            return "CNN deep model"
+            return "Deep model"
         if value == CLOUD_LLM:
             return "Cloud multimodal LLM"
         if value == COMPARE_ALL:
@@ -457,7 +457,7 @@ def make_handler(args: argparse.Namespace):
         predicted, scores = run_cnn(model_path, image_path)
         results.append(
             {
-                "label": f"CNN: {model_path.name}",
+                "label": f"Deep model: {model_path.name}",
                 "predicted": predicted,
                 "scores": scores,
                 "confidence": max(scores.values()),
@@ -488,7 +488,7 @@ def make_handler(args: argparse.Namespace):
         ) -> None:
             models = available_models()
             if not models and algorithm in {CNN_ALGORITHM, COMPARE_ALL}:
-                result = '<section class="panel">No CNN model was found. Run training first to create models/*.pt.</section>'
+                result = '<section class="panel">No deep model was found. Run training first to create models/*.pt.</section>'
             message_html = f'<section class="message">{html.escape(message)}</section>' if message else ""
             data = (
                 PAGE

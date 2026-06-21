@@ -63,6 +63,22 @@ python compare_nailong_algorithms.py --data nailong_naiwa_splits/test --split-di
 
 For a stricter comparison against training from scratch with the same architecture, add `--random-init`.
 
+### Try a Vision Transformer
+
+To upgrade the CNN experiment to a Transformer-style image classifier, use torchvision's ImageNet-pretrained ViT-B/16 backbone:
+
+```powershell
+python train_pretrained_classifier.py --cpu --arch vit_b_16 --epochs 10 --batch-size 4 --freeze-backbone --out models/nailong_naiwa_vit_b_16_head.pt
+```
+
+`vit_b_16` uses fixed 224 x 224 position embeddings in torchvision, so the training script defaults to `--image-size 224` for this architecture. After training, the ViT checkpoint can be used by the existing evaluator, comparison report, and local prediction UI:
+
+```powershell
+python evaluate_nailong_naiwa.py --cpu --model models/nailong_naiwa_vit_b_16_head.pt --data nailong_naiwa_splits/test
+python compare_nailong_algorithms.py --data nailong_naiwa_splits/test --split-dir nailong_naiwa_splits --models-dir models --out-dir reports --cpu
+python predict_nailong_naiwa_ui.py --host 127.0.0.1 --port 8770 --cpu --model models/nailong_naiwa_vit_b_16_head.pt
+```
+
 ## Run the UI
 
 ```powershell

@@ -123,6 +123,12 @@ def build_torchvision_classifier(
         in_features = model.classifier[-1].in_features
         model.classifier[-1] = nn.Linear(in_features, num_classes)
         return model
+    if architecture == "vit_b_16":
+        weights = models.ViT_B_16_Weights.DEFAULT if pretrained else None
+        model = models.vit_b_16(weights=weights)
+        in_features = model.heads.head.in_features
+        model.heads.head = nn.Linear(in_features, num_classes)
+        return model
     raise ValueError(f"Unsupported pretrained architecture: {architecture}")
 
 
@@ -137,6 +143,10 @@ def freeze_backbone(model: nn.Module, architecture: str) -> None:
         return
     if architecture == "mobilenet_v3_small":
         for parameter in model.classifier.parameters():
+            parameter.requires_grad = True
+        return
+    if architecture == "vit_b_16":
+        for parameter in model.heads.parameters():
             parameter.requires_grad = True
         return
     raise ValueError(f"Unsupported pretrained architecture: {architecture}")
@@ -231,7 +241,7 @@ def load_checkpoint(path: str | Path, device: torch.device) -> tuple[nn.Module, 
     image_size = int(payload.get("image_size", IMAGE_SIZE))
     architecture = str(payload.get("architecture", "small_cnn"))
 
-    if architecture in {"resnet18", "mobilenet_v3_small"}:
+    if architecture in {"resnet18", "mobilenet_v3_small", "vit_b_16"}:
         model = build_torchvision_classifier(architecture, len(classes), pretrained=False).to(device)
     else:
         first_conv = payload["state_dict"].get("features.0.weight")
